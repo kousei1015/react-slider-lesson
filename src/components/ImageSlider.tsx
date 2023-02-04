@@ -1,26 +1,60 @@
 import React, { useState } from "react";
+import { Arrow, ArrowWrapper, Dot, Image } from "./ImageSliderStyles";
 
 type Props = {
   slides: string[];
 };
 
 const ImageSlider: React.FC<Props> = ({ slides }) => {
-  const [index, setIndex] = useState(0);
-  console.log(index);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  console.log(selectedIndex);
 
   const toPrevImage = () => {
-    index === 0 ? setIndex(slides.length - 1) : setIndex(index - 1);
+    selectedIndex === 0
+      ? setSelectedIndex(slides.length - 1)
+      : setSelectedIndex(selectedIndex - 1);
   };
+
   const toNextImage = () => {
-    index === slides.length - 1 ? setIndex(0) : setIndex(index + 1);
+    selectedIndex === slides.length - 1
+      ? setSelectedIndex(0)
+      : setSelectedIndex(selectedIndex + 1);
   };
+
+  const toSelectedImage = (slideIndex: number) => {
+    setSelectedIndex(slideIndex);
+  };
+
   return (
     <div>
-      <img src={slides[index]} alt="" />
-      <div style={{ display: "flex", justifyContent: "space-around" }}>
-        <div onClick={toPrevImage}>&larr;</div>
-        <div onClick={toNextImage}>&rarr;</div>
-      </div>
+      {slides.map((slide, slideIndex) => {
+        return (
+          <div>
+            {selectedIndex === slideIndex && (
+              <Image
+                src={slides[selectedIndex]}
+                alt=""
+                active={selectedIndex === slideIndex}
+              />
+            )}
+          </div>
+        );
+      })}
+      <ArrowWrapper>
+        <Arrow onClick={toPrevImage}>←</Arrow>
+        <Arrow onClick={toNextImage}>→</Arrow>
+      </ArrowWrapper>
+
+      {slides.map((_, slideIndex) => (
+        <Dot
+        key={slideIndex}
+        active={selectedIndex === slideIndex ? true : false}
+        onClick={() => toSelectedImage(slideIndex)}
+      >
+        ●
+      </Dot>
+      ))}
     </div>
   );
 };
